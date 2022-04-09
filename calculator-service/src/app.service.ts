@@ -22,7 +22,6 @@ export class AppService {
           console.log('Round score: ' + score)
           continue;
         } else {
-          console.log()
           let roundAfter = rounds[roundIndex + 1]
           let secondRoundAfter = rounds[roundIndex + 2]
           score += 10 + this.determineStrikeScore(roundAfter, secondRoundAfter);
