@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { Round } from './common/round';
+import { Round } from '../../common/round';
 
 @Controller()
 export class AppController {
@@ -10,12 +10,6 @@ export class AppController {
   @EventPattern('calculate-score')
   async handleBowlingRolls(rounds: Round[]) {
     this.appService.calculateBowlingScore(rounds);
-  }
-
-  @MessagePattern({ cmd: 'getBowlingGameCalculation' })
-  async getBowlingRollGame(rounds: Round[]) {
-    console.log('CalculatorService : ' + rounds)
-    return this.appService.calculateBowlingScore(rounds);
   }
 
 }
