@@ -5,13 +5,14 @@ import { AppService } from './app.service';
 
 @Controller('present')
 export class AppController {
+  private bowlingCalculator: BowlingGameCalculator
   constructor(private readonly appService: AppService) {
+    this.bowlingCalculator = new BowlingGameCalculator()
   }
 
   @Post('score')
   async getBowlingPresentedScore(@Body() data: Round[]): Promise<string> {
-    let bowlingCalculator = new BowlingGameCalculator()
-    let bowlingGame = bowlingCalculator.calculateBowlingScore(data);
+    let bowlingGame = this.bowlingCalculator.calculateBowlingScore(data);
     return this.appService.getPresenterOutPut(bowlingGame);
   }
 }
