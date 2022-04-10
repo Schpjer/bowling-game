@@ -17,13 +17,24 @@ describe('AppController', () => {
     describe('root', () => {
         it('Calculator should return score 40', () => {
             let rounds = [{ firstRoll: 10, secondRoll: 0 }, { firstRoll: 8, secondRoll: 2 }, { firstRoll: 4, secondRoll: 0 }]
-            expect(appService.calculateBowlingScore(rounds)).toBe(38)
+            let bowlingGame = appService.calculateBowlingScore(rounds)
+            expect(bowlingGame.finalScore).toBe(38)
         });
     });
+
+    describe('FiveRoundTest', () => {
+        it('Current Score should return 100', () => {
+            let rounds = [{ firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 9, secondRoll: 1 }, { firstRoll: 4, secondRoll: 3 }]
+            let bowlingGame = appService.calculateBowlingScore(rounds)
+            expect(bowlingGame.finalScore).toBe(100)
+        });
+    });
+
     describe('perfectGame', () => {
         it('Calculator should return score 300', () => {
             let rounds = [{ firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 0 }, { firstRoll: 10, secondRoll: 10, thirdRoll: 10 }]
-            expect(appService.calculateBowlingScore(rounds)).toBe(300)
+            let bowlingGame = appService.calculateBowlingScore(rounds)
+            expect(bowlingGame.finalScore).toBe(300)
         });
     });
 });

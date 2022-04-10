@@ -1,44 +1,57 @@
 import { Injectable } from '@nestjs/common';
+import { BowlingGame } from './common/bowling-game';
 import { Round } from './common/round';
 
 @Injectable()
 export class AppService {
 
-  calculateBowlingScore(rounds: Round[]): number {
+  calculateBowlingScore(rounds: Round[]): BowlingGame {
     let score = 0;
     const finalIndex = 9;
-    console.log(rounds.length)
     for (let roundIndex = 0; roundIndex < rounds.length; roundIndex++) {
       let round = rounds[roundIndex]
       if (roundIndex == finalIndex) {
         score += this.calculateLastRoundScore(round)
+        round.roundScore = score;
         continue;
       }
 
       if (this.isStrike(round) && roundIndex !== finalIndex) {
         if (roundIndex == (finalIndex - 1)) {
           let finalRound = rounds[finalIndex]
-          score += 10 + this.calculatePenulimateRoundForStrike(finalRound)
-          console.log('Round score: ' + score)
+          if (finalRound) {
+            score += 10 + this.calculatePenulimateRoundForStrike(finalRound)
+            round.roundScore = score;
+          }
           continue;
         } else {
           let roundAfter = rounds[roundIndex + 1]
           let secondRoundAfter = rounds[roundIndex + 2]
-          score += 10 + this.determineStrikeScore(roundAfter, secondRoundAfter);
-          console.log('Round score: ' + score)
+          let strikeScore = this.determineStrikeScore(roundAfter, secondRoundAfter);
+          if (strikeScore) {
+            score += 10 + strikeScore
+            round.roundScore = score;
+          }
           continue;
         }
 
       }
       let roundScore = round.firstRoll + round.secondRoll
       if (this.isSpare(round) && !round.thirdRoll && roundIndex !== finalIndex) {
-        score += 10 + rounds[roundIndex + 1].firstRoll
+        let spareScore = rounds[roundIndex + 1].firstRoll
+        if (spareScore) {
+          score += 10 + spareScore
+          round.roundScore = score;
+        }
+
       } else {
         score += roundScore
+        round.roundScore = score;
       }
     }
-    console.log('Final score ' + score)
-    return score;
+    let bowlingGame: BowlingGame = { finalScore: score, rounds: rounds };
+    console.log(bowlingGame)
+    return bowlingGame;
   }
 
   calculateLastRoundScore(round: Round): number {
