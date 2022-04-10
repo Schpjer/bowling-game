@@ -5,7 +5,7 @@ import { Round } from './common/round';
 @Injectable()
 export class AppService {
 
-  calculateBowlingScore(rounds: Round[]): BowlingGame {
+  public async calculateBowlingScore(rounds: Round[]): Promise<BowlingGame> {
     let score = 0;
     const finalIndex = 9;
     for (let roundIndex = 0; roundIndex < rounds.length; roundIndex++) {
@@ -16,7 +16,7 @@ export class AppService {
         continue;
       }
 
-      if (this.isStrike(round) && roundIndex !== finalIndex) {
+      if (this.isStrike(round)) {
         if (roundIndex == (finalIndex - 1)) {
           let finalRound = rounds[finalIndex]
           if (finalRound) {
@@ -37,24 +37,23 @@ export class AppService {
 
       }
       let roundScore = round.firstRoll + round.secondRoll
-      if (this.isSpare(round) && !round.thirdRoll && roundIndex !== finalIndex) {
-        let spareScore = rounds[roundIndex + 1].firstRoll
+
+      if (this.isSpare(round)) {
+        let spareScore = rounds[roundIndex + 1]
         if (spareScore) {
-          score += 10 + spareScore
+          score += 10 + spareScore.firstRoll
           round.roundScore = score;
         }
-
       } else {
         score += roundScore
         round.roundScore = score;
       }
     }
     let bowlingGame: BowlingGame = { finalScore: score, rounds: rounds };
-    console.log(bowlingGame)
     return bowlingGame;
   }
 
-  calculateLastRoundScore(round: Round): number {
+  private calculateLastRoundScore(round: Round): number {
     if (round.firstRoll === 10 && round.secondRoll === 10) {
       return round.firstRoll + round.secondRoll + round.thirdRoll
     }
@@ -64,27 +63,25 @@ export class AppService {
     else {
       return round.firstRoll + round.secondRoll
     }
-
   }
-  calculatePenulimateRoundForStrike(round: Round): number {
+  private calculatePenulimateRoundForStrike(round: Round): number {
     return round.firstRoll + round.secondRoll
   }
-  determineStrikeScore(firstRoundAfter: Round, secondRoundAfter: Round): number {
+  private determineStrikeScore(firstRoundAfter: Round, secondRoundAfter: Round): number {
     if (firstRoundAfter && secondRoundAfter) {
-      if (firstRoundAfter.firstRoll == 10) {
+      if (firstRoundAfter.firstRoll === 10) {
         return firstRoundAfter.firstRoll + secondRoundAfter.firstRoll
       }
       else {
         return firstRoundAfter.firstRoll + firstRoundAfter.secondRoll
       }
-
     }
   }
-  isStrike(round: Round) {
+  private isStrike(round: Round) {
     return round.firstRoll === 10
   }
 
-  isSpare(round: Round) {
+  private isSpare(round: Round) {
     return round.firstRoll + round.secondRoll === 10
   }
 }
